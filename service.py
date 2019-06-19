@@ -158,11 +158,14 @@ def process_function(queue, form):
             xslt_script = os.path.join(app.config['UPLOAD_FOLDER'], form['xslt_file'])
 
         if form['xml_upload_or_remote'] == 'upload':
+            # if a file is "uploaded"
             logging.info('Uploaded file received.')
             xml_path = os.path.join(app.config['UPLOAD_FOLDER'], form['xml_file'])
             trans = lbp_print.LocalTranscription(xml_path, custom_xslt=xslt_script)
         else:
+            # if a scta resource is given
             logging.info('Looking for remote resource.')
+            # get the transcription url
             trans = lbp_print.RemoteTranscription(form['scta_id'], custom_xslt=xslt_script)
 
         if form['tex_or_pdf'] == 'tex':
@@ -207,6 +210,8 @@ def service():
         return make_response(jsonify({'error': error_message}), 404)
     return jsonify({'url': request.host + '/' + res_file})
 
+
+# This the starting route for human beings
 @app.route('/')
 def submit():
     form = TranscriptionForm()
